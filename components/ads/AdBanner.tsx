@@ -24,7 +24,7 @@ const adConfig = {
     label: "Middle Banner 970 × 90",
     width: "w-full",
     height: "h-[90px] md:h-[90px]",
-    image: "/middle-banner-ads.jpeg",
+    image: "/moeltiva-ads.jpeg",
   },
   inline: {
     label: "Inline Article Banner 300 × 250",
@@ -64,10 +64,10 @@ export default function AdBanner({ variant = "middle", className = "" }: AdBanne
       role="complementary"
       aria-label="Iklan"
     >
-      <img 
-        src={config.image} 
-        alt={config.label} 
-        className="w-full h-full object-cover" 
+      <img
+        src={config.image}
+        alt={config.label}
+        className="w-full h-full object-cover"
         onError={() => setError(true)}
       />
     </div>
