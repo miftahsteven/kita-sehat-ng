@@ -1,10 +1,13 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import ClientLayout from "@/components/layout/ClientLayout";
 import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Kita-Sehat.id — Informasi Kesehatan Keluarga",
   description: "Artikel terpercaya, tips kesehatan, dan panduan gaya hidup sehat untuk membantu anak dan keluarga tetap bugar.",
+};
+
+export const viewport: Viewport = {
   themeColor: "#0098b0",
 };
 

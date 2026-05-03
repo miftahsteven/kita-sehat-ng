@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { Instagram, Facebook, Twitter, Youtube } from "lucide-react";
 import Container from "./Container";
 import { FOOTER_LINKS, HEALTH_DISCLAIMER, SITE_NAME } from "@/lib/constants";
@@ -13,21 +14,13 @@ export default function Footer() {
         <div className="py-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Brand */}
           <div className="lg:col-span-1">
-            <div className="flex items-center gap-2 mb-4">
-              <div className="w-8 h-8">
-                <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-full">
-                  <circle cx="20" cy="20" r="20" fill="white" opacity="0.15"/>
-                  <path d="M17 20h2v-3h2v3h2v2h-2v3h-2v-3h-2v-2z" fill="white"/>
-                  <path d="M20 10c-3.3 0-6 2.7-6 6 0 5 6 13 6 13s6-8 6-13c0-3.3-2.7-6-6-6z" stroke="white" strokeWidth="1.5" fill="none"/>
-                </svg>
-              </div>
-              <div>
-                <span className="block text-lg font-extrabold tracking-tight leading-none text-white">
-                  Kita<span className="text-primary">Sehat</span>.id
-                </span>
-                <span className="block text-[9px] text-white/50 uppercase tracking-widest leading-none mt-0.5">
-                  Kesehatan Keluarga
-                </span>
+            <div className="mb-5">
+              <div className="bg-white p-2 rounded-xl inline-block shadow-lg">
+                <img
+                  src="/kita-sehat-logo.jpeg"
+                  alt="Kita-Sehat.id"
+                  className="h-8 md:h-9 w-auto object-contain"
+                />
               </div>
             </div>
             <p className="text-sm text-white/60 leading-relaxed mb-5">
