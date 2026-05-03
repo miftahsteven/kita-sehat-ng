@@ -118,7 +118,7 @@ export default async function CategoryPage({ params }: Props) {
                       <span>{cat.name}</span>
                       <div
                         className="w-2 h-2 rounded-full"
-                        style={{ backgroundColor: cat.slug === params.slug ? "white" : cat.color }}
+                        style={{ backgroundColor: cat.slug === slug ? "white" : cat.color }}
                       />
                     </a>
                   ))}
