@@ -15,6 +15,11 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: "https",
+        hostname: "api.kita-sehat.id",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
         hostname: "kita-sehat.id",
         pathname: "/**",
       },
