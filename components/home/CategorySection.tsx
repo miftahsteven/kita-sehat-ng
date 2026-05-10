@@ -56,6 +56,7 @@ export default function CategorySection({ category, articles }: CategorySectionP
               author={main.author}
               publishedAt={main.publishedAt}
               readingTime={main.readingTime}
+              viewCount={main.views}
               compact
             />
           </div>
@@ -86,6 +87,7 @@ export default function CategorySection({ category, articles }: CategorySectionP
                   author={article.author}
                   publishedAt={article.publishedAt}
                   readingTime={article.readingTime}
+                  viewCount={article.views}
                   compact
                 />
               </div>
@@ -121,6 +123,7 @@ export default function CategorySection({ category, articles }: CategorySectionP
                   author={article.author}
                   publishedAt={article.publishedAt}
                   readingTime={article.readingTime}
+                  viewCount={article.views}
                   compact
                   className="mt-1.5"
                 />

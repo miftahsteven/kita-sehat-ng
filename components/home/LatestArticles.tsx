@@ -1,4 +1,4 @@
-import { Article } from "@/data/dummyArticles";
+import { Article } from "@/lib/utils";
 import ArticleCard from "@/components/article/ArticleCard";
 import SectionTitle from "@/components/common/SectionTitle";
 

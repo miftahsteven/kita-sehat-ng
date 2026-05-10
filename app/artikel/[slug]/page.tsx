@@ -7,52 +7,68 @@ import ArticleMeta from "@/components/article/ArticleMeta";
 import RelatedArticles from "@/components/article/RelatedArticles";
 import PopularArticleList from "@/components/article/PopularArticleList";
 import AdBanner from "@/components/ads/AdBanner";
-import { getArticleBySlug, getRelatedArticles, getPopularArticles } from "@/lib/utils";
-import { dummyArticles } from "@/data/dummyArticles";
+import { getArticleDetail, getPopularArticles, getSafeImageUrl, calculateReadingTime } from "@/lib/utils";
 import { Share2, Facebook, Twitter, Link as LinkIcon, AlertCircle } from "lucide-react";
 import { HEALTH_DISCLAIMER } from "@/lib/constants";
 import { categories } from "@/data/categories";
+import ViewTracker from "@/components/article/ViewTracker";
+import ShareButtons from "@/components/article/ShareButtons";
+
+
+
+import type { Metadata } from "next";
 
 interface Props {
   params: Promise<{ slug: string }>;
 }
 
-export async function generateStaticParams() {
-  return dummyArticles.map((article) => ({ slug: article.slug }));
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { slug } = await params;
+  const data = await getArticleDetail(slug);
+  
+  if (!data?.article) return { title: "Artikel Tidak Ditemukan" };
+  
+  const { article } = data;
+  const imageUrl = getSafeImageUrl(article.coverImage, "https://kita-sehat.id/og-image.jpg");
+
+  return {
+    title: article.title,
+    description: article.excerpt || article.seoDescription,
+    keywords: article.seoKeywords,
+    openGraph: {
+      title: article.title,
+      description: article.excerpt || article.seoDescription,
+      url: `https://kita-sehat.id/artikel/${article.slug}`,
+      type: "article",
+      publishedTime: article.publishedAt,
+      authors: [article.author?.name || "Redaksi Kita Sehat"],
+      images: [
+        {
+          url: imageUrl,
+          width: 1200,
+          height: 630,
+          alt: article.title,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: article.title,
+      description: article.excerpt || article.seoDescription,
+      images: [imageUrl],
+    },
+  };
 }
 
 export default async function ArticleDetailPage({ params }: Props) {
   const { slug } = await params;
-  const article = getArticleBySlug(slug);
-  if (!article) notFound();
+  const data = await getArticleDetail(slug);
+  if (!data?.article) notFound();
 
-  const related = getRelatedArticles(article, 3);
-  const popular = getPopularArticles();
+  const { article, relatedArticles } = data;
+  const popular = await getPopularArticles();
 
-  const defaultContent = `
-<p>${article.excerpt}</p>
-
-<h2>Mengapa Hal Ini Penting?</h2>
-<p>Kesehatan adalah investasi jangka panjang yang sering kali diabaikan di tengah kesibukan sehari-hari. Namun memahami topik ini dapat membuat perbedaan besar dalam kualitas hidup Anda dan keluarga.</p>
-
-<h2>Apa yang Perlu Anda Ketahui</h2>
-<p>Berdasarkan penelitian terbaru dan rekomendasi dari para tenaga kesehatan profesional, ada beberapa hal penting yang perlu dipahami terkait topik ini:</p>
-<ul>
-<li>Konsistensi adalah kunci — perubahan kecil yang dilakukan secara rutin lebih efektif daripada perubahan besar yang tidak berkelanjutan.</li>
-<li>Setiap orang memiliki kondisi yang berbeda — apa yang berhasil untuk satu orang belum tentu cocok untuk yang lain.</li>
-<li>Konsultasikan dengan tenaga medis profesional sebelum membuat perubahan signifikan pada gaya hidup atau pola makan Anda.</li>
-</ul>
-
-<h2>Langkah Praktis yang Bisa Dilakukan</h2>
-<p>Mulailah dengan langkah-langkah kecil yang realistis dan dapat dilakukan setiap hari. Tidak perlu perubahan drastis — cukup komitmen untuk menjadi sedikit lebih baik setiap harinya.</p>
-
-<blockquote>Kesehatan bukan tujuan akhir, melainkan cara hidup yang dijalani dengan penuh kesadaran setiap hari.</blockquote>
-
-<h2>Tips dari Para Ahli</h2>
-<p>Para dokter dan ahli kesehatan menyarankan untuk tidak terburu-buru dalam mengejar hasil. Proses yang berkelanjutan dengan motivasi yang tepat jauh lebih penting daripada hasil instan yang tidak bertahan lama.</p>
-
-<p>Dengan menerapkan informasi ini secara konsisten, Anda dan keluarga dapat merasakan manfaat kesehatan yang nyata dalam jangka panjang.</p>
-  `;
+  const imageUrl = getSafeImageUrl(article.coverImage, "https://placehold.co/1200x675?text=No+Image");
 
   return (
     <div className="py-6 md:py-8">
@@ -60,10 +76,11 @@ export default async function ArticleDetailPage({ params }: Props) {
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-8">
           {/* Main content */}
           <article>
+            <ViewTracker articleId={article.id} />
             {/* Breadcrumb */}
             <Breadcrumb
               items={[
-                { label: article.category, href: `/category/${article.categorySlug}` },
+                { label: article.category?.name, href: `/category/${article.category?.slug}` },
                 { label: article.title },
               ]}
             />
@@ -71,8 +88,8 @@ export default async function ArticleDetailPage({ params }: Props) {
             {/* Category + Title */}
             <div className="mb-5">
               <CategoryBadge
-                category={article.category}
-                categorySlug={article.categorySlug}
+                category={article.category?.name}
+                categorySlug={article.category?.slug}
                 size="md"
                 className="mb-3"
               />
@@ -80,38 +97,22 @@ export default async function ArticleDetailPage({ params }: Props) {
                 {article.title}
               </h1>
               <ArticleMeta
-                author={article.author}
+                author={article.author?.name}
                 publishedAt={article.publishedAt}
-                readingTime={article.readingTime}
+                readingTime={calculateReadingTime(article.content)}
+                viewCount={article.viewCount}
                 className="mb-4"
               />
 
               {/* Share buttons */}
-              <div className="flex items-center gap-2 pt-3 border-t border-gray-100">
-                <span className="text-xs text-gray-400 flex items-center gap-1 mr-1">
-                  <Share2 className="w-3.5 h-3.5" /> Bagikan:
-                </span>
-                {[
-                  { label: "Facebook", icon: Facebook, color: "bg-blue-600" },
-                  { label: "Twitter/X", icon: Twitter, color: "bg-sky-500" },
-                  { label: "Salin Link", icon: LinkIcon, color: "bg-gray-500" },
-                ].map(({ label, icon: Icon, color }) => (
-                  <button
-                    key={label}
-                    aria-label={`Bagikan ke ${label}`}
-                    className={`w-8 h-8 rounded-lg ${color} text-white flex items-center justify-center hover:opacity-80 transition-opacity`}
-                  >
-                    <Icon className="w-3.5 h-3.5" />
-                  </button>
-                ))}
-              </div>
+              <ShareButtons title={article.title} url={`/artikel/${article.slug}`} />
             </div>
 
             {/* Featured Image */}
             <div className="relative aspect-[16/9] rounded-2xl overflow-hidden mb-7">
               <Image
-                src={article.image}
-                alt={article.title}
+                src={imageUrl}
+                alt={article.title || "Gambar Artikel"}
                 fill
                 priority
                 className="object-cover"
@@ -123,7 +124,7 @@ export default async function ArticleDetailPage({ params }: Props) {
             <div
               className="prose-article"
               dangerouslySetInnerHTML={{
-                __html: article.content || defaultContent,
+                __html: article.content || "",
               }}
             />
 
@@ -141,23 +142,11 @@ export default async function ArticleDetailPage({ params }: Props) {
               </div>
             </div>
 
-            {/* Tags */}
-            {article.tags && article.tags.length > 0 && (
-              <div className="mt-6 flex flex-wrap gap-2">
-                <span className="text-sm text-gray-400">Tag:</span>
-                {article.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="text-xs bg-gray-100 text-gray-500 px-2.5 py-1 rounded-full hover:bg-primary/10 hover:text-primary transition-colors cursor-pointer"
-                  >
-                    #{tag}
-                  </span>
-                ))}
-              </div>
-            )}
-
             {/* Related Articles */}
-            <RelatedArticles articles={related} />
+            <div className="mt-12">
+              <RelatedArticles articles={relatedArticles} />
+            </div>
+
           </article>
 
           {/* Sidebar */}
@@ -192,3 +181,4 @@ export default async function ArticleDetailPage({ params }: Props) {
     </div>
   );
 }
+

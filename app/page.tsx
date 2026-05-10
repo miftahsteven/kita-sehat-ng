@@ -7,37 +7,40 @@ import WhatsAppCTA from "@/components/home/WhatsAppCTA";
 import AdBanner from "@/components/ads/AdBanner";
 import PopularArticleList from "@/components/article/PopularArticleList";
 import {
-  getFeaturedArticles,
-  getHighlightArticles,
   getLatestArticles,
   getPopularArticles,
-  getEditorPickArticles,
-  getArticlesByCategory,
+  getHeroArticles,
+  getFeaturedArticles,
+  getEditorPicks
 } from "@/lib/utils";
-import { categories } from "@/data/categories";
 
-export default function HomePage() {
-  const featured = getFeaturedArticles();
-  const highlights = getHighlightArticles();
-  const latest = getLatestArticles(6);
-  const popular = getPopularArticles();
-  const editorsPick = getEditorPickArticles();
+export default async function HomePage() {
+  // Fetch specific segments
+  const heroArticles = await getHeroArticles(5); 
+  const featuredArticles = await getFeaturedArticles(4); 
+  const editorPickArticles = await getEditorPicks(4);
+  const rawLatestArticles = await getLatestArticles(30); // Fetch even more for filtering
+  const popularArticles = await getPopularArticles(5);
 
-  // Category sections
-  const categorySections = [
-    "nutrisi",
-    "keluarga",
-    "jiwa",
-    "kesehatan-karir",
-    "pria-wanita",
-  ];
+  // Filter latest articles:
+  // 1. Not in featuredArticles (isFeatured === true)
+  // 2. Not in heroArticles (currently displayed in slider)
+  // 3. Not in editorPickArticles (isEditorPick === true)
+  const heroIds = heroArticles.map(a => a.id);
+  const editorPickIds = editorPickArticles.map(a => a.id);
+  
+  const latestArticles = rawLatestArticles
+    .filter(a => !a.isFeatured) // Exclude all highlighted
+    .filter(a => !a.isEditorPick) // Exclude editor picks
+    .filter(a => !heroIds.includes(a.id)) // Exclude currently in slider
+    .slice(0, 6); // Take top 6 after filtering
 
   return (
     <div>
       {/* Hero Section */}
       <section className="bg-gray-50 py-5">
         <Container>
-          <HeroSlider featured={featured} highlights={highlights} />
+          <HeroSlider featured={heroArticles} highlights={featuredArticles} />
         </Container>
       </section>
 
@@ -52,11 +55,11 @@ export default function HomePage() {
       <section className="py-8 bg-white">
         <Container>
           <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-8">
-            <LatestArticles articles={latest} />
+            <LatestArticles articles={latestArticles} />
             {/* Sidebar */}
             <aside className="hidden lg:block">
               <div className="sticky top-16 space-y-6">
-                <PopularArticleList articles={popular} />
+                <PopularArticleList articles={popularArticles} />
                 <AdBanner variant="sidebar" />
               </div>
             </aside>
@@ -67,29 +70,17 @@ export default function HomePage() {
       {/* Divider */}
       <div className="bg-gray-50 h-2" />
 
-      {/* Category Sections */}
-      {/* <section className="py-8 bg-white">
+      {/* Mobile Popular Articles */}
+      <section className="lg:hidden py-8 bg-white">
         <Container>
-          <div className="space-y-10">
-            {categorySections.map((slug) => {
-              const cat = categories.find((c) => c.slug === slug);
-              if (!cat) return null;
-              const articles = getArticlesByCategory(slug, 4);
-              return (
-                <CategorySection key={slug} category={cat} articles={articles} />
-              );
-            })}
-          </div>
+          <PopularArticleList articles={popularArticles} />
         </Container>
-      </section> */}
-
-      {/* Divider */}
-      <div className="bg-gray-50 h-2" />
+      </section>
 
       {/* Editor's Pick */}
       <section className="py-8 bg-white">
         <Container>
-          <EditorsPick articles={editorsPick} />
+          <EditorsPick articles={editorPickArticles} />
         </Container>
       </section>
 
@@ -102,3 +93,4 @@ export default function HomePage() {
     </div>
   );
 }
+

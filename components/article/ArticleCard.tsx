@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Article } from "@/data/dummyArticles";
+import { Article, getSafeImageUrl, calculateReadingTime } from "@/lib/utils";
 import CategoryBadge from "./CategoryBadge";
 import ArticleMeta from "./ArticleMeta";
 
@@ -15,12 +15,15 @@ export default function ArticleCard({
   variant = "default",
   className = "",
 }: ArticleCardProps) {
+  const imageUrl = getSafeImageUrl(article.coverImage);
+  const readingTime = calculateReadingTime(article.content);
+
   if (variant === "large") {
     return (
       <Link href={`/artikel/${article.slug}`} className={`article-card group block ${className}`}>
         <div className="relative overflow-hidden aspect-[16/9]">
           <Image
-            src={article.image}
+            src={imageUrl}
             alt={article.title}
             fill
             className="object-cover transition-transform duration-500 group-hover:scale-105"
@@ -29,8 +32,8 @@ export default function ArticleCard({
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent" />
           <div className="absolute bottom-0 left-0 right-0 p-5">
             <CategoryBadge
-              category={article.category}
-              categorySlug={article.categorySlug}
+              category={article.category?.name}
+              categorySlug={article.category?.slug}
               noLink={true}
               className="mb-3 bg-white/20 text-white border-0 backdrop-blur-sm hover:bg-white/30"
             />
@@ -38,9 +41,10 @@ export default function ArticleCard({
               {article.title}
             </h2>
             <ArticleMeta
-              author={article.author}
+              author={article.author?.name}
               publishedAt={article.publishedAt}
-              readingTime={article.readingTime}
+              readingTime={readingTime}
+              viewCount={article.viewCount}
               compact
               className="text-white/70"
             />
@@ -55,7 +59,7 @@ export default function ArticleCard({
       <Link href={`/artikel/${article.slug}`} className={`article-card group flex gap-3 p-3 ${className}`}>
         <div className="relative w-24 h-20 flex-shrink-0 overflow-hidden rounded-xl">
           <Image
-            src={article.image}
+            src={imageUrl}
             alt={article.title}
             fill
             className="object-cover transition-transform duration-500 group-hover:scale-105"
@@ -64,8 +68,8 @@ export default function ArticleCard({
         </div>
         <div className="flex-1 min-w-0 py-0.5">
           <CategoryBadge
-            category={article.category}
-            categorySlug={article.categorySlug}
+            category={article.category?.name}
+            categorySlug={article.category?.slug}
             noLink={true}
             className="mb-1.5"
           />
@@ -73,9 +77,10 @@ export default function ArticleCard({
             {article.title}
           </h3>
           <ArticleMeta
-            author={article.author}
+            author={article.author?.name}
             publishedAt={article.publishedAt}
-            readingTime={article.readingTime}
+            readingTime={readingTime}
+            viewCount={article.viewCount}
             compact
             className="mt-1"
           />
@@ -89,7 +94,7 @@ export default function ArticleCard({
     <Link href={`/artikel/${article.slug}`} className={`article-card group block ${className}`}>
       <div className="relative overflow-hidden aspect-[16/9] rounded-t-2xl">
         <Image
-          src={article.image}
+          src={imageUrl}
           alt={article.title}
           fill
           className="object-cover transition-transform duration-500 group-hover:scale-105"
@@ -98,8 +103,8 @@ export default function ArticleCard({
       </div>
       <div className="p-4">
         <CategoryBadge
-          category={article.category}
-          categorySlug={article.categorySlug}
+          category={article.category?.name}
+          categorySlug={article.category?.slug}
           noLink={true}
           className="mb-2.5"
         />
@@ -110,12 +115,14 @@ export default function ArticleCard({
           {article.excerpt}
         </p>
         <ArticleMeta
-          author={article.author}
+          author={article.author?.name}
           publishedAt={article.publishedAt}
-          readingTime={article.readingTime}
+          readingTime={readingTime}
+          viewCount={article.viewCount}
           compact
         />
       </div>
     </Link>
   );
 }
+

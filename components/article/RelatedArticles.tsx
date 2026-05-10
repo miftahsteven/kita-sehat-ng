@@ -1,5 +1,5 @@
 import ArticleCard from "./ArticleCard";
-import { Article } from "@/data/dummyArticles";
+import { Article } from "@/lib/utils";
 import SectionTitle from "@/components/common/SectionTitle";
 
 interface RelatedArticlesProps {

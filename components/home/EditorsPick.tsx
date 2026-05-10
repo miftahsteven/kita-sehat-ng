@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Article } from "@/data/dummyArticles";
+import { Article, getSafeImageUrl, calculateReadingTime } from "@/lib/utils";
 import CategoryBadge from "@/components/article/CategoryBadge";
 import ArticleMeta from "@/components/article/ArticleMeta";
 import { Star } from "lucide-react";
@@ -13,6 +13,7 @@ export default function EditorsPick({ articles }: EditorsPickProps) {
   if (articles.length === 0) return null;
 
   const [main, ...rest] = articles;
+  const mainImageUrl = getSafeImageUrl(main.coverImage, "https://placehold.co/600x340");
 
   return (
     <section className="rounded-2xl overflow-hidden"
@@ -35,7 +36,7 @@ export default function EditorsPick({ articles }: EditorsPickProps) {
           <Link href={`/artikel/${main.slug}`} className="group block bg-white rounded-2xl overflow-hidden shadow-card hover:shadow-card-hover transition-all duration-300 hover:-translate-y-1">
             <div className="relative aspect-[16/9] overflow-hidden">
               <Image
-                src={main.image}
+                src={mainImageUrl}
                 alt={main.title}
                 fill
                 className="object-cover transition-transform duration-500 group-hover:scale-105"
@@ -49,15 +50,16 @@ export default function EditorsPick({ articles }: EditorsPickProps) {
               </div>
             </div>
             <div className="p-5">
-              <CategoryBadge category={main.category} categorySlug={main.categorySlug} noLink={true} className="mb-3" />
+              <CategoryBadge category={main.category?.name} categorySlug={main.category?.slug} noLink={true} className="mb-3" />
               <h3 className="text-lg font-bold text-secondary line-clamp-2 leading-snug mb-2 group-hover:text-primary transition-colors">
                 {main.title}
               </h3>
               <p className="text-sm text-gray-500 line-clamp-2 leading-relaxed mb-3">{main.excerpt}</p>
               <ArticleMeta
-                author={main.author}
+                author={main.author?.name || "Redaksi"}
                 publishedAt={main.publishedAt}
-                readingTime={main.readingTime}
+                readingTime={calculateReadingTime(main.content)}
+                viewCount={main.viewCount}
                 compact
               />
             </div>
@@ -78,9 +80,15 @@ export default function EditorsPick({ articles }: EditorsPickProps) {
                   <h4 className="text-sm font-semibold text-secondary line-clamp-2 leading-snug group-hover:text-primary transition-colors mb-1">
                     {article.title}
                   </h4>
-                  <div className="flex items-center gap-1.5">
-                    <CategoryBadge category={article.category} categorySlug={article.categorySlug} noLink={true} />
-                    <span className="text-[10px] text-gray-400">· {article.readingTime}</span>
+                  <div className="flex flex-col gap-1.5">
+                    <CategoryBadge category={article.category?.name} categorySlug={article.category?.slug} noLink={true} />
+                    <ArticleMeta 
+                      author={article.author?.name || "Redaksi"} 
+                      publishedAt={article.publishedAt}
+                      readingTime={calculateReadingTime(article.content)}
+                      viewCount={article.viewCount}
+                      compact 
+                    />
                   </div>
                 </div>
               </Link>
@@ -91,3 +99,4 @@ export default function EditorsPick({ articles }: EditorsPickProps) {
     </section>
   );
 }
+

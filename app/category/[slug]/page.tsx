@@ -7,22 +7,29 @@ import AdBanner from "@/components/ads/AdBanner";
 import { getCategoryBySlug } from "@/data/categories";
 import { getArticlesByCategory, getPopularArticles } from "@/lib/utils";
 import { categories } from "@/data/categories";
+import Link from "next/link";
 
 interface Props {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{ page?: string }>;
 }
 
 export async function generateStaticParams() {
   return categories.map((cat) => ({ slug: cat.slug }));
 }
 
-export default async function CategoryPage({ params }: Props) {
+export default async function CategoryPage({ params, searchParams }: Props) {
   const { slug } = await params;
+  const { page: pageStr } = await searchParams;
+  const page = parseInt(pageStr || "1");
+  
   const category = getCategoryBySlug(slug);
   if (!category) notFound();
 
-  const articles = getArticlesByCategory(slug);
-  const popular = getPopularArticles();
+  const { articles, meta } = await getArticlesByCategory(slug, page, 10);
+  const popular = await getPopularArticles();
+
+  const totalPages = meta.lastPage || 1;
 
   return (
     <div className="py-6 md:py-8">
@@ -40,7 +47,7 @@ export default async function CategoryPage({ params }: Props) {
             {category.description}
           </p>
           <div className="mt-3 text-xs text-gray-400">
-            {articles.length} artikel tersedia
+            {meta.total} artikel tersedia
           </div>
         </div>
 
@@ -53,41 +60,61 @@ export default async function CategoryPage({ params }: Props) {
               </div>
             ) : (
               <>
-                {/* Featured article */}
-                {articles[0] && (
-                  <div className="mb-6">
-                    <ArticleCard article={articles[0]} variant="large" />
-                  </div>
-                )}
-
                 {/* Article grid */}
-                {articles.length > 1 && (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                    {articles.slice(1).map((article) => (
-                      <ArticleCard key={article.id} article={article} />
-                    ))}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                  {articles.map((article) => (
+                    <ArticleCard key={article.id} article={article} />
+                  ))}
+                </div>
+
+                {/* Pagination */}
+                {totalPages > 1 && (
+                  <div className="mt-12 flex items-center justify-center gap-2">
+                    {/* Previous Button */}
+                    {page > 1 && (
+                      <Link
+                        href={`/category/${slug}?page=${page - 1}`}
+                        className="px-4 py-2 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-600 hover:bg-slate-50 transition-all"
+                      >
+                        Previous
+                      </Link>
+                    )}
+
+                    {/* Page Numbers */}
+                    <div className="flex items-center gap-1.5">
+                      {Array.from({ length: totalPages }, (_, i) => i + 1)
+                        .filter(p => p === 1 || p === totalPages || (p >= page - 1 && p <= page + 1))
+                        .map((p, i, arr) => {
+                          const showEllipsis = i > 0 && p !== arr[i - 1] + 1;
+                          return (
+                            <div key={p} className="flex items-center gap-1.5">
+                              {showEllipsis && <span className="text-slate-400">...</span>}
+                              <Link
+                                href={`/category/${slug}?page=${p}`}
+                                className={`w-10 h-10 rounded-xl flex items-center justify-center text-sm font-bold transition-all ${
+                                  p === page
+                                    ? "bg-[#0098b0] text-white shadow-lg shadow-cyan-500/30"
+                                    : "bg-white border border-slate-100 text-slate-500 hover:border-[#0098b0] hover:text-[#0098b0]"
+                                }`}
+                              >
+                                {p}
+                              </Link>
+                            </div>
+                          );
+                        })}
+                    </div>
+
+                    {/* Next Button */}
+                    {page < totalPages && (
+                      <Link
+                        href={`/category/${slug}?page=${page + 1}`}
+                        className="px-4 py-2 rounded-xl bg-white border border-slate-200 text-sm font-bold text-slate-600 hover:bg-slate-50 transition-all"
+                      >
+                        Next
+                      </Link>
+                    )}
                   </div>
                 )}
-
-                {/* Pagination dummy */}
-                <div className="mt-8 flex items-center justify-center gap-2">
-                  {[1, 2, 3].map((page) => (
-                    <button
-                      key={page}
-                      className={`w-9 h-9 rounded-lg text-sm font-medium transition-all ${
-                        page === 1
-                          ? "bg-primary text-white"
-                          : "bg-gray-100 text-gray-600 hover:bg-primary/10 hover:text-primary"
-                      }`}
-                    >
-                      {page}
-                    </button>
-                  ))}
-                  <span className="text-gray-400 text-sm px-2">...</span>
-                  <button className="w-9 h-9 rounded-lg text-sm font-medium bg-gray-100 text-gray-600 hover:bg-primary/10 hover:text-primary transition-all">
-                    8
-                  </button>
-                </div>
               </>
             )}
           </div>
@@ -106,7 +133,7 @@ export default async function CategoryPage({ params }: Props) {
                 </div>
                 <div className="space-y-2">
                   {categories.map((cat) => (
-                    <a
+                    <Link
                       key={cat.slug}
                       href={`/category/${cat.slug}`}
                       className={`flex items-center justify-between px-3 py-2.5 rounded-xl text-sm transition-all ${
@@ -120,7 +147,7 @@ export default async function CategoryPage({ params }: Props) {
                         className="w-2 h-2 rounded-full"
                         style={{ backgroundColor: cat.slug === slug ? "white" : cat.color }}
                       />
-                    </a>
+                    </Link>
                   ))}
                 </div>
               </div>
@@ -131,3 +158,4 @@ export default async function CategoryPage({ params }: Props) {
     </div>
   );
 }
+
