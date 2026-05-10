@@ -44,7 +44,9 @@ export function getSafeImageUrl(url: string | null | undefined, fallback = "http
   if (!url || typeof url !== "string" || url.trim() === "") {
     return fallback;
   }
-  return url;
+  if (url.startsWith("http")) return url;
+  const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4003";
+  return `${API_BASE}${url}`;
 }
 
 export function getTodayDate(): string {
