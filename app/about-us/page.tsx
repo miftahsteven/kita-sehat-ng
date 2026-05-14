@@ -24,16 +24,16 @@ async function getAboutSettings() {
 }
 
 const FounderCard = ({ name, title, bio, image, isFirst }: { name: string, title: string, bio: React.ReactNode, image: string, isFirst?: boolean }) => (
-  <div className="relative bg-white rounded-3xl shadow-lg overflow-hidden md:flex items-stretch border border-slate-100 transition-all hover:shadow-xl group mb-12 min-h-[350px] md:min-h-[450px]">
+  <div className="relative bg-white rounded-2xl shadow-md overflow-hidden md:flex items-stretch border border-slate-100 transition-all hover:shadow-lg group mb-8 min-h-[250px] md:min-h-[280px]">
     {/* FOUNDER Label */}
-    <div className="absolute top-6 right-0 z-10">
-      <div className="bg-[#103174] text-white py-2 px-8 rounded-l-xl font-black tracking-widest text-xs md:text-sm uppercase shadow-md">
+    <div className="absolute top-4 right-0 z-10">
+      <div className="bg-[#103174] text-white py-1 px-5 rounded-l-lg font-black tracking-widest text-[10px] md:text-xs uppercase shadow-sm">
         FOUNDER
       </div>
     </div>
 
     {/* Image Section - Left (Fit to card height) */}
-    <div className="md:w-[30%] min-h-[350px] md:min-h-0 relative overflow-hidden bg-slate-100 shrink-0">
+    <div className="md:w-[25%] min-h-[250px] md:min-h-0 relative overflow-hidden bg-slate-100 shrink-0">
       <Image
         src={image || "/placeholder-founder.png"}
         alt={name}
@@ -45,24 +45,24 @@ const FounderCard = ({ name, title, bio, image, isFirst }: { name: string, title
     </div>
 
     {/* Vertical Line Separator (Desktop Only) */}
-    <div className="hidden md:block w-[1px] bg-gradient-to-b from-transparent via-[#103174]/10 to-transparent my-10"></div>
+    <div className="hidden md:block w-[1px] bg-gradient-to-b from-transparent via-[#103174]/10 to-transparent my-6"></div>
 
     {/* Content Section - Right */}
-    <div className="md:w-[70%] p-8 md:p-16 flex flex-col justify-start bg-gradient-to-br from-white to-slate-50/50">
-      <div className="space-y-6">
+    <div className="md:w-[75%] p-6 md:p-10 flex flex-col justify-start bg-gradient-to-br from-white to-slate-50/50">
+      <div className="space-y-4">
         <div>
-          <h2 className="text-3xl md:text-4xl font-black text-[#103174] leading-none tracking-tight">
+          <h2 className="text-xl md:text-2xl font-black text-[#103174] leading-tight tracking-tight">
             {name}
           </h2>
-          <div className="flex items-center gap-3 mt-4">
-            <div className="h-[4px] w-8 bg-[#0098b0] rounded-full"></div>
-            <p className="text-sm md:text-lg font-bold text-[#0098b0] italic uppercase tracking-widest">
+          <div className="flex items-center gap-2 mt-2">
+            <div className="h-[2px] w-5 bg-[#0098b0] rounded-full"></div>
+            <p className="text-xs md:text-sm font-bold text-[#0098b0] italic uppercase tracking-wider">
               {title}
             </p>
           </div>
         </div>
 
-        <div className="space-y-5 text-slate-600 text-base md:text-lg leading-relaxed font-medium whitespace-pre-line">
+        <div className="space-y-3 text-slate-600 text-xs md:text-sm leading-relaxed font-medium whitespace-pre-line">
           {bio}
         </div>
       </div>
@@ -88,13 +88,13 @@ export default async function AboutUsPage() {
   };
 
   return (
-    <div className="bg-[#f4f7f9] min-h-screen py-16 md:py-24 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto space-y-12">
-        <div className="text-center mb-16">
-          <h1 className="text-3xl md:text-5xl font-black text-[#103174] uppercase tracking-tighter">Tentang Kami</h1>
-          <div className="flex items-center justify-center gap-3 mt-4">
-            <div className="h-1.5 w-16 bg-[#0098b0] rounded-full"></div>
-            <div className="h-1.5 w-6 bg-[#103174] rounded-full"></div>
+    <div className="bg-[#f4f7f9] min-h-screen pt-8 pb-16 md:pt-12 md:pb-20 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto space-y-10">
+        <div className="text-left mb-10">
+          <h1 className="text-2xl md:text-3xl font-black text-[#103174] uppercase tracking-tight">Tentang Kami</h1>
+          <div className="flex items-center justify-start gap-2 mt-3">
+            <div className="h-1.5 w-12 bg-[#0098b0] rounded-full"></div>
+            <div className="h-1.5 w-4 bg-[#103174] rounded-full"></div>
           </div>
         </div>
 
