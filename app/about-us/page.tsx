@@ -24,45 +24,45 @@ async function getAboutSettings() {
 }
 
 const FounderCard = ({ name, title, bio, image, isFirst }: { name: string, title: string, bio: React.ReactNode, image: string, isFirst?: boolean }) => (
-  <div className="relative bg-white rounded-3xl shadow-lg overflow-hidden md:flex items-stretch border border-slate-100 transition-all hover:shadow-xl group mb-10">
+  <div className="relative bg-white rounded-3xl shadow-lg overflow-hidden md:flex items-stretch border border-slate-100 transition-all hover:shadow-xl group mb-12 min-h-[350px] md:min-h-[450px]">
     {/* FOUNDER Label */}
-    <div className="absolute top-4 right-0 z-10">
-      <div className="bg-[#103174] text-white py-1.5 px-6 rounded-l-lg font-bold tracking-wider text-xs md:text-sm uppercase shadow-sm">
+    <div className="absolute top-6 right-0 z-10">
+      <div className="bg-[#103174] text-white py-2 px-8 rounded-l-xl font-black tracking-widest text-xs md:text-sm uppercase shadow-md">
         FOUNDER
       </div>
     </div>
 
     {/* Image Section - Left (Fit to card height) */}
-    <div className="md:w-[28%] min-h-[300px] md:min-h-0 relative overflow-hidden bg-slate-100">
+    <div className="md:w-[30%] min-h-[350px] md:min-h-0 relative overflow-hidden bg-slate-100 shrink-0">
       <Image
         src={image || "/placeholder-founder.png"}
         alt={name}
         fill
-        className="object-cover transition-transform duration-500 group-hover:scale-105"
+        className="object-cover transition-transform duration-700 group-hover:scale-110"
         priority={isFirst}
         unoptimized={image.startsWith("data:")} // Allow base64 images
       />
     </div>
 
     {/* Vertical Line Separator (Desktop Only) */}
-    <div className="hidden md:block w-[1px] bg-gradient-to-b from-transparent via-[#103174]/20 to-transparent my-4"></div>
+    <div className="hidden md:block w-[1px] bg-gradient-to-b from-transparent via-[#103174]/10 to-transparent my-10"></div>
 
     {/* Content Section - Right */}
-    <div className="md:w-[72%] p-8 md:p-12 flex flex-col justify-center bg-gradient-to-br from-white to-slate-50/30">
-      <div className="space-y-5">
+    <div className="md:w-[70%] p-8 md:p-16 flex flex-col justify-start bg-gradient-to-br from-white to-slate-50/50">
+      <div className="space-y-6">
         <div>
-          <h2 className="text-2xl md:text-3xl font-black text-[#103174] leading-tight tracking-tight">
+          <h2 className="text-3xl md:text-4xl font-black text-[#103174] leading-none tracking-tight">
             {name}
           </h2>
-          <div className="flex items-center gap-2 mt-2">
-            <div className="h-[3px] w-6 bg-[#0098b0]"></div>
-            <p className="text-sm md:text-base font-bold text-[#0098b0] italic uppercase tracking-wider">
+          <div className="flex items-center gap-3 mt-4">
+            <div className="h-[4px] w-8 bg-[#0098b0] rounded-full"></div>
+            <p className="text-sm md:text-lg font-bold text-[#0098b0] italic uppercase tracking-widest">
               {title}
             </p>
           </div>
         </div>
 
-        <div className="space-y-4 text-slate-600 text-sm md:text-base leading-relaxed font-normal whitespace-pre-line">
+        <div className="space-y-5 text-slate-600 text-base md:text-lg leading-relaxed font-medium whitespace-pre-line">
           {bio}
         </div>
       </div>
