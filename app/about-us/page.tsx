@@ -10,7 +10,8 @@ export const metadata = {
 
 async function getAboutSettings() {
   try {
-    const res = await fetch("http://localhost:4003/api/settings", { 
+    const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4003";
+    const res = await fetch(`${API_BASE_URL}/api/settings`, { 
       cache: "no-store" // Ensure we get fresh data
     });
     if (!res.ok) return null;
