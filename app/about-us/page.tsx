@@ -1,6 +1,8 @@
 import React from "react";
 import Image from "next/image";
 
+export const dynamic = "force-dynamic";
+
 export const metadata = {
   title: "Tentang Kami | Kita-Sehat.id",
   description: "Kenali lebih dekat pendiri dan visi misi KITA-SEHAT.id dalam mengedukasi masyarakat Indonesia tentang gaya hidup sehat.",
