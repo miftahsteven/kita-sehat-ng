@@ -15,7 +15,7 @@ export default function TopBar() {
           <span className="font-semibold text-primary tracking-wide">
             #HidupSehatMulaiSekarang
           </span>
-          <div className="flex items-center gap-4">
+          {/* <div className="flex items-center gap-4">
             <Link href="/tentang-kami" className="hover:text-primary transition-colors duration-150">
               Tentang Kami
             </Link>
@@ -25,7 +25,7 @@ export default function TopBar() {
             <Link href="/kontak" className="hover:text-primary transition-colors duration-150">
               Kontak
             </Link>
-          </div>
+          </div> */}
         </div>
       </Container>
     </div>
