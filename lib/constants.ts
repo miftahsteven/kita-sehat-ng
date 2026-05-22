@@ -13,7 +13,7 @@ export const NAV_ITEMS = [
   { label: "Pria & Wanita", href: "/category/pria-wanita" },
   { label: "Jiwa", href: "/category/jiwa" },
   { label: "Kesehatan & Karir", href: "/category/kesehatan-karir" },
-  { label: "Tentang Kami", href: "/about-us" },
+  // { label: "Tentang Kami", href: "/about-us" },
 ];
 
 export const FOOTER_LINKS = {
