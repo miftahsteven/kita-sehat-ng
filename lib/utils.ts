@@ -45,6 +45,13 @@ export function getSafeImageUrl(url: string | null | undefined, fallback = "http
     return fallback;
   }
   if (url.startsWith("http")) return url;
+
+  // Serve uploaded images from the production API URL in development
+  if (url.startsWith("/uploads/") || url.startsWith("uploads/")) {
+    const safeUrl = url.startsWith("/") ? url : `/${url}`;
+    return `https://api.kita-sehat.id${safeUrl}`;
+  }
+
   const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:4003";
   return `${API_BASE}${url}`;
 }

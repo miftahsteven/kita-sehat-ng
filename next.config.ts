@@ -4,6 +4,16 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       {
+        protocol: "http",
+        hostname: "localhost",
+        pathname: "/**",
+      },
+      {
+        protocol: "http",
+        hostname: "127.0.0.1",
+        pathname: "/**",
+      },
+      {
         protocol: "https",
         hostname: "images.unsplash.com",
         pathname: "/**",
@@ -29,7 +39,9 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/uploads/:path*',
-        destination: `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4003'}/uploads/:path*`,
+        destination: process.env.NODE_ENV === 'development'
+          ? 'https://api.kita-sehat.id/uploads/:path*'
+          : `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4003'}/uploads/:path*`,
       },
     ];
   },
