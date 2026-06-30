@@ -14,6 +14,8 @@ import {
   getEditorPicks
 } from "@/lib/utils";
 
+export const dynamic = "force-dynamic";
+
 export default async function HomePage() {
   // Fetch specific segments
   const heroArticles = await getHeroArticles(5); 

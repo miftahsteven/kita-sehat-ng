@@ -3,6 +3,7 @@ export async function apiFetch(endpoint: string, options: RequestInit = {}) {
   
   const res = await fetch(`${API_URL}${endpoint}`, {
     ...options,
+    cache: "no-store",
     headers: {
       "Content-Type": "application/json",
       ...options.headers,
