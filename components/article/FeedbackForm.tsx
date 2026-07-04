@@ -22,25 +22,25 @@ const CODE39_PATTERNS: Record<string, string> = {
 
 function Barcode({ value }: { value: string }) {
   const fullVal = `*${value}*`;
-  
+
   const narrowWidth = 2;
   const wideWidth = 5;
   const gapWidth = 2;
-  
+
   let currentX = 15;
   const height = 65;
   const rects: React.ReactNode[] = [];
-  
+
   for (let i = 0; i < fullVal.length; i++) {
     const char = fullVal[i].toUpperCase();
     const pattern = CODE39_PATTERNS[char];
     if (!pattern) continue;
-    
+
     for (let j = 0; j < 9; j++) {
       const isBar = j % 2 === 0;
       const isWide = pattern[j] === '1';
       const width = isWide ? wideWidth : narrowWidth;
-      
+
       if (isBar) {
         rects.push(
           <rect
@@ -55,14 +55,14 @@ function Barcode({ value }: { value: string }) {
       }
       currentX += width;
     }
-    
+
     if (i < fullVal.length - 1) {
       currentX += gapWidth;
     }
   }
-  
+
   const totalWidth = currentX + 15;
-  
+
   return (
     <div className="flex flex-col items-center justify-center p-5 bg-white border border-slate-100 rounded-2xl shadow-sm max-w-full overflow-x-auto">
       <svg width={totalWidth} height={height + 25} viewBox={`0 0 ${totalWidth} ${height + 25}`} className="mx-auto">
@@ -159,8 +159,8 @@ export default function FeedbackForm({ articleId }: { articleId: string }) {
   }, [recaptchaLoaded, success]);
 
   const handleCategoryChange = (catName: string) => {
-    setSelectedCategories(prev => 
-      prev.includes(catName) 
+    setSelectedCategories(prev =>
+      prev.includes(catName)
         ? prev.filter(c => c !== catName)
         : [...prev, catName]
     );
@@ -220,7 +220,7 @@ export default function FeedbackForm({ articleId }: { articleId: string }) {
           <div className="inline-flex items-center justify-center w-20 h-20 bg-white/10 backdrop-blur-md rounded-full mb-2 border border-white/20 animate-bounce">
             <Gift className="w-10 h-10 text-white" />
           </div>
-          
+
           <h2 className="text-3xl md:text-4xl font-extrabold tracking-tight">Terima Kasih Atas Feedback Anda!</h2>
           <p className="text-teal-100 text-sm md:text-base leading-relaxed">
             Feedback Anda sangat berharga bagi peningkatan kualitas informasi di <strong>kita-sehat.id</strong>. Sebagai apresiasi, kami telah menyiapkan bingkisan menarik untuk Anda!
@@ -235,7 +235,7 @@ export default function FeedbackForm({ articleId }: { articleId: string }) {
             </div>
 
             <div className="border-t border-white/10 pt-6">
-              <span className="text-[10px] uppercase font-bold tracking-widest text-teal-200 block mb-3">Barcode Kupon Hadiah</span>
+              <span className="text-[10px] uppercase font-bold tracking-widest text-teal-200 block mb-3">Barcode Kupon</span>
               <Barcode value={verificationCode} />
             </div>
           </div>
@@ -243,7 +243,7 @@ export default function FeedbackForm({ articleId }: { articleId: string }) {
           <div className="flex items-start justify-center gap-3 text-left max-w-lg mx-auto bg-black/10 rounded-xl p-4 text-xs text-teal-50">
             <Sparkles className="w-5 h-5 flex-shrink-0 text-amber-300" />
             <p className="leading-relaxed">
-              <strong>Penting:</strong> Simpan halaman ini atau ambil tangkapan layar (screenshot) barcode dan tunjukkan kepada petugas kami untuk proses verifikasi hadiah Anda.
+              <strong>Penting:</strong> Simpan halaman ini atau ambil tangkapan layar (screenshot) barcode dan tunjukkan kepada Admin.
             </p>
           </div>
         </div>
@@ -254,8 +254,8 @@ export default function FeedbackForm({ articleId }: { articleId: string }) {
   return (
     <div className="mt-12 bg-white border border-slate-100 rounded-3xl p-6 md:p-10 shadow-lg shadow-slate-100/50">
       {/* Script Loader for Google reCAPTCHA v2 */}
-      <Script 
-        src="https://www.google.com/recaptcha/api.js?onload=onRecaptchaLoad&render=explicit" 
+      <Script
+        src="https://www.google.com/recaptcha/api.js?onload=onRecaptchaLoad&render=explicit"
         strategy="afterInteractive"
       />
 
@@ -265,7 +265,7 @@ export default function FeedbackForm({ articleId }: { articleId: string }) {
         </span>
         <h2 className="text-2xl font-bold text-slate-900 mb-2">Bantu kami meningkatkan Kita-Sehat.id</h2>
         <p className="text-sm text-slate-500 leading-relaxed">
-          Kategori informasi kesehatan apa yang paling Anda sukai? Isi form feedback singkat di bawah ini dan dapatkan hadiah menarik langsung dari kami!
+          Kategori informasi kesehatan apa yang paling Anda sukai? Isi form feedback singkat di bawah ini
         </p>
       </div>
 
@@ -320,19 +320,17 @@ export default function FeedbackForm({ articleId }: { articleId: string }) {
               {categories.map((cat) => {
                 const isChecked = selectedCategories.includes(cat.name);
                 return (
-                  <label 
+                  <label
                     key={cat.id}
-                    className={`flex items-center gap-3 px-4 py-3 rounded-xl border cursor-pointer select-none transition-all ${
-                      isChecked 
-                        ? "border-[#0098b0] bg-cyan-50/20 text-[#0098b0]" 
-                        : "border-slate-200 bg-white hover:bg-slate-50 text-slate-600"
-                    }`}
+                    className={`flex items-center gap-3 px-4 py-3 rounded-xl border cursor-pointer select-none transition-all ${isChecked
+                      ? "border-[#0098b0] bg-cyan-50/20 text-[#0098b0]"
+                      : "border-slate-200 bg-white hover:bg-slate-50 text-slate-600"
+                      }`}
                   >
-                    <div className={`w-5 h-5 rounded flex items-center justify-center border transition-all ${
-                      isChecked 
-                        ? "border-[#0098b0] bg-[#0098b0] text-white" 
-                        : "border-slate-300 bg-white"
-                    }`}>
+                    <div className={`w-5 h-5 rounded flex items-center justify-center border transition-all ${isChecked
+                      ? "border-[#0098b0] bg-[#0098b0] text-white"
+                      : "border-slate-300 bg-white"
+                      }`}>
                       {isChecked && <Check size={12} strokeWidth={3} />}
                     </div>
                     <span className="text-xs font-semibold">{cat.name}</span>
@@ -347,18 +345,16 @@ export default function FeedbackForm({ articleId }: { articleId: string }) {
               })}
 
               {/* "Lainnya" Checkbox */}
-              <label 
-                className={`flex items-center gap-3 px-4 py-3 rounded-xl border cursor-pointer select-none transition-all ${
-                  isOtherChecked 
-                    ? "border-[#0098b0] bg-cyan-50/20 text-[#0098b0]" 
-                    : "border-slate-200 bg-white hover:bg-slate-50 text-slate-600"
-                }`}
+              <label
+                className={`flex items-center gap-3 px-4 py-3 rounded-xl border cursor-pointer select-none transition-all ${isOtherChecked
+                  ? "border-[#0098b0] bg-cyan-50/20 text-[#0098b0]"
+                  : "border-slate-200 bg-white hover:bg-slate-50 text-slate-600"
+                  }`}
               >
-                <div className={`w-5 h-5 rounded flex items-center justify-center border transition-all ${
-                  isOtherChecked 
-                    ? "border-[#0098b0] bg-[#0098b0] text-white" 
-                    : "border-slate-300 bg-white"
-                }`}>
+                <div className={`w-5 h-5 rounded flex items-center justify-center border transition-all ${isOtherChecked
+                  ? "border-[#0098b0] bg-[#0098b0] text-white"
+                  : "border-slate-300 bg-white"
+                  }`}>
                   {isOtherChecked && <Check size={12} strokeWidth={3} />}
                 </div>
                 <span className="text-xs font-semibold">Lainnya</span>
@@ -421,7 +417,7 @@ export default function FeedbackForm({ articleId }: { articleId: string }) {
           ) : (
             <>
               <Gift size={16} />
-              Kirim Feedback & Dapatkan Hadiah
+              Kirim Feedback
             </>
           )}
         </button>
