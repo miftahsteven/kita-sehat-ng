@@ -13,6 +13,7 @@ import { HEALTH_DISCLAIMER } from "@/lib/constants";
 import { categories } from "@/data/categories";
 import ViewTracker from "@/components/article/ViewTracker";
 import ShareButtons from "@/components/article/ShareButtons";
+import FeedbackForm from "@/components/article/FeedbackForm";
 
 
 
@@ -141,6 +142,11 @@ export default async function ArticleDetailPage({ params }: Props) {
                 <p className="text-xs text-amber-600 leading-relaxed">{HEALTH_DISCLAIMER}</p>
               </div>
             </div>
+
+            {/* Feedback Form */}
+            {article.feedbackFormEnabled && (
+              <FeedbackForm articleId={article.id} />
+            )}
 
             {/* Related Articles */}
             <div className="mt-12">

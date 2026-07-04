@@ -14,6 +14,7 @@ export type Article = {
   isFeatured: boolean;
   isHero: boolean;
   isEditorPick: boolean;
+  feedbackFormEnabled?: boolean;
   seoTitle?: string;
   seoDescription?: string;
   seoKeywords?: string;
