@@ -54,6 +54,9 @@ export default async function CategoryPage({ params, searchParams }: Props) {
         {/* Content + Sidebar */}
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-8">
           <div>
+            {/* Sub Topic Banner */}
+            <AdBanner variant="sub-topic" className="mb-6" />
+
             {articles.length === 0 ? (
               <div className="text-center py-16 text-gray-400">
                 <p className="text-lg font-medium">Belum ada artikel di kategori ini.</p>
@@ -122,8 +125,10 @@ export default async function CategoryPage({ params, searchParams }: Props) {
           {/* Sidebar */}
           <aside className="hidden lg:block">
             <div className="sticky top-16 space-y-6">
+              {/* Mini Ads above Popular Articles */}
+              <AdBanner variant="mini-ads" />
+
               <PopularArticleList articles={popular} />
-              <AdBanner variant="sidebar" />
 
               {/* All categories */}
               <div>
