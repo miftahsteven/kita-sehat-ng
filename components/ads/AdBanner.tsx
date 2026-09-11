@@ -35,8 +35,8 @@ const adConfig = {
   middle: {
     placement: "BELOW_HERO",
     label: "Middle Banner",
-    width: "w-full",
-    height: "h-[90px] md:h-[200px]",
+    width: "w-full max-w-[970px] mx-auto",
+    height: "aspect-[1600/364]",
     settingKey: "BANNER_MIDDLE_ENABLED",
   },
   "sub-topic": {
@@ -249,7 +249,7 @@ export default function AdBanner({ variant = "middle", className = "" }: AdBanne
           rel="noopener noreferrer"
           className="w-full h-full block"
         >
-          <picture>
+          <picture className="w-full h-full block">
             {currentBanner.imageUrlMobile && (
               <source media="(max-width: 768px)" srcSet={currentBanner.imageUrlMobile} />
             )}
