@@ -24,18 +24,28 @@ export default async function HomePage() {
   const rawLatestArticles = await getLatestArticles(30); // Fetch even more for filtering
   const popularArticles = await getPopularArticles(5);
 
-  // Filter latest articles:
-  // 1. Not in featuredArticles (isFeatured === true)
-  // 2. Not in heroArticles (currently displayed in slider)
-  // 3. Not in editorPickArticles (isEditorPick === true)
-  const heroIds = heroArticles.map(a => a.id);
-  const editorPickIds = editorPickArticles.map(a => a.id);
+  // Deduplicate articles currently displayed in Hero Slider (slider + highlights)
+  const topSliderIds = new Set([
+    ...heroArticles.map(a => a.id),
+    ...featuredArticles.map(a => a.id)
+  ]);
   
-  const latestArticles = rawLatestArticles
-    .filter(a => !a.isFeatured) // Exclude all highlighted
-    .filter(a => !a.isEditorPick) // Exclude editor picks
-    .filter(a => !heroIds.includes(a.id)) // Exclude currently in slider
-    .slice(0, 6); // Take top 6 after filtering
+  // Prefer articles not currently displayed in the top hero slider
+  let latestArticles = rawLatestArticles.filter(a => !topSliderIds.has(a.id));
+
+  // Fallback: If not enough articles (< 6), backfill from rawLatestArticles so it is never blank
+  if (latestArticles.length < 6) {
+    const existingIds = new Set(latestArticles.map(a => a.id));
+    for (const a of rawLatestArticles) {
+      if (!existingIds.has(a.id)) {
+        latestArticles.push(a);
+        existingIds.add(a.id);
+        if (latestArticles.length >= 6) break;
+      }
+    }
+  }
+
+  latestArticles = latestArticles.slice(0, 6);
 
   return (
     <div>
